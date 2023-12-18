@@ -1,0 +1,9 @@
+@import url('https://free.bboxtype.com/embedfonts/?family=FiraGO:400,500,700');
+
+@import './variable.scss';
+@import './normalize.scss';
+
+html,
+body {
+  font-family: 'FiraGO', sans-serif;
+}
