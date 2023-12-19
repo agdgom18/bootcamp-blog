@@ -1,0 +1,17 @@
+@import '../../scss/variable.scss';
+
+.main {
+  background-color: #f3f2fa;
+  padding-top: 64px;
+  padding-inline: 76px;
+}
+.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 64px;
+}
+
+h2 {
+  @include header;
+}

@@ -1,0 +1,16 @@
+@import '../../scss/variable.scss';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 80px;
+  padding-block: 20px;
+  padding-inline: 76px;
+  background-color: #ffffff;
+}
+
+.button {
+  @include button-style;
+  color: $color-white;
+}
