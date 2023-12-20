@@ -10,7 +10,7 @@ async function fetchFilters() {
     },
   });
 
-  return res.data.data.slice(0, 6);
+  return res.data.data;
 }
 const Filters = () => {
   const { data, isLoading } = useQuery({ queryKey: ['filters'], queryFn: fetchFilters });

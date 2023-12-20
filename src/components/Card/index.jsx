@@ -2,7 +2,20 @@ import React from 'react';
 import photo from '../../img/card-image.jpg';
 import { Link } from 'react-router-dom';
 import styles from './card.module.scss';
+import axios from 'axios';
+
+async function getBlogs() {
+  const res = await axios.get('https://api.blog.redberryinternship.ge/api/blogs', {
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+    },
+  });
+  console.log(res);
+  return res;
+}
+
 const Card = () => {
+  getBlogs();
   return (
     <div className={styles.card}>
       <img className={styles.img} src={photo} alt="card-photo" />
