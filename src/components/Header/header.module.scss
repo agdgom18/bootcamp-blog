@@ -14,3 +14,45 @@
   @include button-style;
   color: $color-white;
 }
+
+.title {
+  color: #1a1a1f;
+  text-align: center;
+  font-family: FiraGO;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 32px; /* 133.333% */
+  margin-bottom: 24px;
+}
+.submitBtn {
+  display: flex;
+  color: #fff;
+  width: 432px;
+  padding: 10px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #5d37f3;
+}
+
+label,
+input {
+  display: block;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+input {
+  margin-bottom: 24px;
+  width: 432px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1.5px solid #5d37f3;
+  background: #f7f7ff;
+  padding-left: 10px;
+}
