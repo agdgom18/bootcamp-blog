@@ -56,3 +56,20 @@ input {
   background: #f7f7ff;
   padding-left: 10px;
 }
+
+.formControl {
+  margin-bottom: 10px;
+}
+
+.errorText {
+  color: #ea1919;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.succsessCircle {
+  text-align: center;
+  margin-bottom: 20px;
+}

@@ -2,31 +2,44 @@ import React, { useState } from 'react';
 import logo from '../../img/logo.svg';
 import styles from './header.module.scss';
 import Modal from '../Modal/Modal';
-import styles2 from '../Modal/modal.module.scss';
+import { useForm } from 'react-hook-form';
+import infoCircle from '../../img/info-circle.svg';
+import succsessCircle from '../../img/succsess-circle.svg';
+import axios from 'axios';
+
 const Header = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [email, setEmail] = useState('');
-  const [isValid, setIsValid] = useState(true);
-
-  const handleEmailChange = (e) => {
-    const inputEmail = e.target.value;
-    setEmail(inputEmail);
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = emailPattern.test(inputEmail);
-    setIsValid(isValidEmail);
-  };
-
   const changeModalStatus = () => setModalOpen((prev) => !prev);
-  const signIn = () => {
-    console.log(email);
-    setIsLogin((prev) => !prev);
+
+  // FORM
+  const form = useForm();
+  const { register, handleSubmit, formState, reset } = form;
+  const [serverError, setServerError] = React.useState(null);
+  const { errors } = formState;
+
+  const onSubmitHandler = async ({ email }) => {
+    try {
+      const apiUrl = 'https://api.blog.redberryinternship.ge/api/login'; // Замените на ваш реальный URL
+      const postData = {
+        email: email,
+      };
+      const axiosConfig = {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      //  POST
+      const response = await axios.post(apiUrl, postData, axiosConfig);
+      reset();
+    } catch (error) {
+      setServerError('მომხმარებელი არ მოიძებნა');
+    }
   };
   return (
     <header className={styles.header}>
       <img src={logo} alt="logo"></img>
-
       {!isLogin ? (
         <button onClick={changeModalStatus} className={styles.button}>
           შესვლა
@@ -38,26 +51,51 @@ const Header = () => {
       <Modal isOpen={isModalOpen} onClose={changeModalStatus}>
         {isLogin ? (
           <div>
+            <img className={styles.succsessCircle} src={succsessCircle} alt="ok" />
             <h3 className={styles.title}>წარმატებული ავტორიზაცია</h3>
           </div>
         ) : (
           <div>
             <h3 className={styles.title}>შესვლა</h3>
 
-            <form className={styles.form}>
-              <label>
-                ელ-ფოსტა:
+            <form onSubmit={handleSubmit(onSubmitHandler)} className={styles.form}>
+              <div className={styles.formControl}>
+                <label htmlFor="email">ელ-ფოსტა:</label>
                 <input
-                  onChange={handleEmailChange}
+                  style={{ border: errors?.email ? '1px solid red' : '' }}
                   type="email"
-                  name="email"
+                  id="email"
                   placeholder="Example@redberry.ge"
-                  style={{ borderColor: email.length > 0 && isValid ? '#5d37f3' : 'red' }}
+                  {...register('email', {
+                    pattern: {
+                      value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                      message: 'Invlaid email',
+                    },
+                    required: {
+                      value: true,
+                      message: 'Enter correct email',
+                    },
+                    validate: {
+                      emailEnd: (fieldValue) => {
+                        return fieldValue.endsWith('@redberry.ge') || 'ელ-ფოსტა არ მოიძებნა';
+                      },
+                    },
+                  })}
                 />
-              </label>
-              <button onClick={signIn} className={styles.submitBtn}>
-                შესვლა
-              </button>
+                {errors?.email && (
+                  <div className={styles.errorText}>
+                    <img src={infoCircle} alt="info" />
+                    <p>{errors.email?.message}</p>
+                  </div>
+                )}
+                {!errors?.email && serverError && (
+                  <div className={styles.errorText}>
+                    <img src={infoCircle} alt="info" />
+                    <p>{serverError}</p>
+                  </div>
+                )}
+              </div>
+              <button className={styles.submitBtn}>შესვლა</button>
             </form>
           </div>
         )}
