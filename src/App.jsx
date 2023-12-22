@@ -4,6 +4,7 @@ import Home from './page/Home';
 import './scss/style.scss';
 import Blog from './page/Blog';
 import React, { createContext } from 'react';
+import PrivateRoutes from './utils/PrivateRoutes';
 
 export const Context = createContext();
 
@@ -14,8 +15,10 @@ function App() {
       <Context.Provider value={[signedIn, setSignedIn]}>
         <Header />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/" element={<Home />} exact />
+          <Route element={<PrivateRoutes />}>
+            <Route path="/add" element={<Blog />} />
+          </Route>
         </Routes>
       </Context.Provider>
     </>
