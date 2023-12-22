@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import logo from '../../img/logo.svg';
 import styles from './header.module.scss';
 import Modal from '../Modal/Modal';
@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import infoCircle from '../../img/info-circle.svg';
 import succsessCircle from '../../img/succsess-circle.svg';
 import axios from 'axios';
-
+import { Context } from '../../App';
 const Header = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
   const changeModalStatus = () => setModalOpen((prev) => !prev);
-
+  //Context for validation
+  const [signedIn, setSignedIn] = useContext(Context);
   // FORM
   const form = useForm();
   const { register, handleSubmit, formState, reset } = form;
@@ -20,7 +20,7 @@ const Header = () => {
 
   const onSubmitHandler = async ({ email }) => {
     try {
-      const apiUrl = 'https://api.blog.redberryinternship.ge/api/login'; // Замените на ваш реальный URL
+      const apiUrl = 'https://api.blog.redberryinternship.ge/api/login';
       const postData = {
         email: email,
       };
@@ -32,6 +32,7 @@ const Header = () => {
       };
       //  POST
       const response = await axios.post(apiUrl, postData, axiosConfig);
+      setSignedIn(true);
       reset();
     } catch (error) {
       setServerError('მომხმარებელი არ მოიძებნა');
@@ -40,7 +41,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <img src={logo} alt="logo"></img>
-      {!isLogin ? (
+      {!signedIn ? (
         <button onClick={changeModalStatus} className={styles.button}>
           შესვლა
         </button>
@@ -49,8 +50,8 @@ const Header = () => {
       )}
 
       <Modal isOpen={isModalOpen} onClose={changeModalStatus}>
-        {isLogin ? (
-          <div>
+        {signedIn ? (
+          <div className={styles.succsessBLock}>
             <img className={styles.succsessCircle} src={succsessCircle} alt="ok" />
             <h3 className={styles.title}>წარმატებული ავტორიზაცია</h3>
           </div>
@@ -95,7 +96,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <button className={styles.submitBtn}>შესვლა</button>
+              <button className={styles.submitBtn}> შესვლა</button>
             </form>
           </div>
         )}
