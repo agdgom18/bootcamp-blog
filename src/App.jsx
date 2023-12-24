@@ -5,6 +5,7 @@ import './scss/style.scss';
 import Blog from './page/Blog';
 import React, { createContext } from 'react';
 import PrivateRoutes from './utils/PrivateRoutes';
+import AddBlog from './page/AddBlog/AddBlog';
 
 export const Context = createContext();
 
@@ -17,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} exact />
           <Route element={<PrivateRoutes />}>
-            <Route path="/add" element={<Blog />} />
+            <Route path="/add" element={<AddBlog />} />
           </Route>
         </Routes>
       </Context.Provider>

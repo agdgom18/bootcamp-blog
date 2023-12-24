@@ -18,3 +18,16 @@ button {
   border: none;
   cursor: pointer;
 }
+
+// addblog
+
+.react-select__indicator-separator {
+  display: none;
+}
+.react-select__clear-indicator {
+  display: none !important;
+}
+.react-select__input-container {
+  margin: 0 !important;
+  padding: 0 !important;
+}
