@@ -6,9 +6,11 @@ import Select from 'react-select';
 import clsx from 'clsx';
 import styles from './addBlog.module.scss';
 import infoCircle from '../../img/info-circle.svg';
-import { categoryOptions, categoryStyles } from '../../docs/data';
+import { categoryOptions, categoryStyles, fetchOptions } from '../../docs/data';
 import useFormPersist from 'react-hook-form-persist';
 import cutLetter from '../../utils/cutAdditionalLetters';
+import { Link } from 'react-router-dom';
+import AsyncSelect from 'react-select/async';
 
 const addClassBasedOnError = (value, hasError) => {
   if (value.length === 0) {
@@ -19,26 +21,24 @@ const addClassBasedOnError = (value, hasError) => {
 
 const AddBlog = () => {
   const [authorErrorsState, setAuthorErrorsState] = useState({
-    hasMinLettersError: true,
-    hasCountOfWordError: true,
-    hasGeLettersError: true,
+    hasMinLettersError: false,
+    hasCountOfWordError: false,
+    hasGeLettersError: false,
   });
 
-  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedName, setSelectedName] = useState('');
 
   const {
     register,
     control,
-
     handleSubmit,
     formState: { errors, isValid },
-    getFieldState,
     watch,
     setValue,
     getValues,
+    resetField,
   } = useForm({
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       author: '',
       title: '',
@@ -46,34 +46,32 @@ const AddBlog = () => {
       description: '',
       publicateDate: '',
       file: {},
+      category: [],
     },
   });
-
+  console.log(errors);
   useFormPersist('storageKey', {
     watch,
     setValue,
-    selectedFile,
     storage: window.localStorage,
-    exclude: ['file'],
   });
 
   const onSubmitHandler = (data) => {
-    console.log('submit', { ...data, file: selectedFile });
+    console.log('submit', data);
   };
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-    setSelectedName(file.name);
+
+  const removeFile = () => {
+    resetField('file');
+    setSelectedName(null);
   };
-  const removeFile = () => setSelectedFile(null);
 
   return (
     <div className={styles.addBlog}>
       <h1 className={styles.title}>ბლოგის დამატება</h1>
-
+      <Link to={'/'} className="backNavButton"></Link>
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
-        <div className={clsx(styles.parent, selectedFile ? styles.uploadBlock : '')}>
-          {!selectedFile ? (
+        <div className={clsx(styles.parent, selectedName ? styles.uploadBlock : '')}>
+          {!selectedName ? (
             <div className={styles.fileupload}>
               <img src={pick} alt="upload" />
               <p>
@@ -82,19 +80,32 @@ const AddBlog = () => {
               <Controller
                 control={control}
                 name="file"
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <>
-                    <input onChange={handleFileChange} type="file" />
-                  </>
-                )}
-              />
-
-              <input
-                {...register('file', {
-                  required: true,
-                })}
-                onChange={handleFileChange}
-                type="file"
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'აირჩიე კატეგორია',
+                  },
+                  validate: {
+                    checkOnEmpty: (value) => {
+                      return value !== null;
+                    },
+                  },
+                }}
+                render={({ field: { onChange, value }, fieldState: { error } }) => {
+                  return (
+                    <>
+                      <input
+                        accept=".jpg, .jpeg, .png, .gif"
+                        onChange={({ target }) => {
+                          setSelectedName(target.files[0].name);
+                          onChange(target.files[0]);
+                        }}
+                        type="file"
+                      />
+                      <p>{errors?.file?.message}</p>
+                    </>
+                  );
+                }}
               />
             </div>
           ) : (
@@ -210,13 +221,15 @@ const AddBlog = () => {
               }}
               render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <>
-                  <Select
+                  <AsyncSelect
                     placeholder={'შეიყვანეთ კატეგორია'}
                     onChange={(newValue) => onChange(newValue)}
                     value={value}
                     styles={categoryStyles}
-                    options={categoryOptions}
                     isMulti
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={fetchOptions}
                     className="react-select-container"
                     classNamePrefix="react-select"
                   />
