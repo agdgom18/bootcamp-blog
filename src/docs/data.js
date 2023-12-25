@@ -1,15 +1,32 @@
 import chroma from 'chroma-js';
+import axios from 'axios';
+
+export async function fetchOptions() {
+  const res = await axios.get('https://api.blog.redberryinternship.ge/api/categories', {
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+    },
+  });
+  const result = res.data.data;
+  return result.map((el) => {
+    return {
+      value: el.id,
+      label: el.title,
+      color: el.background_color,
+    };
+  });
+}
 
 export const categoryOptions = [
-  { value: 'მარკეტი', label: 'მარკეტი', color: '#1AC7A8' },
-  { value: 'აპლიკაცია', label: 'აპლიკაცია', color: '#5243AA' },
-  { value: 'red', label: 'Red', color: '#FF5630' },
-  { value: 'orange', label: 'Orange', color: '#FF8B00' },
-  { value: 'yellow', label: 'Yellow', color: '#FFC400' },
-  { value: 'green', label: 'Green', color: '#36B37E' },
-  { value: 'forest', label: 'Forest', color: '#00875A' },
-  { value: 'slate', label: 'Slate', color: '#253858' },
-  { value: 'silver', label: 'Silver', color: '#666666' },
+  { value: '1', label: 'მარკეტი', color: '#1AC7A8' },
+  { value: '2', label: 'აპლიკაცია', color: '#5243AA' },
+  { value: '3', label: 'Red', color: '#FF5630' },
+  { value: '4', label: 'Orange', color: '#FF8B00' },
+  { value: '5', label: 'Yellow', color: '#FFC400' },
+  { value: '6', label: 'Green', color: '#36B37E' },
+  { value: '7', label: 'Forest', color: '#00875A' },
+  { value: '8', label: 'Slate', color: '#253858' },
+  { value: '9', label: 'Silver', color: '#666666' },
 ];
 
 export const categoryStyles = {
@@ -57,3 +74,16 @@ export const categoryStyles = {
     },
   }),
 };
+
+export const colourOptions = [
+  { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
+  { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
+  { value: 'purple', label: 'Purple', color: '#5243AA' },
+  { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
+  { value: 'orange', label: 'Orange', color: '#FF8B00' },
+  { value: 'yellow', label: 'Yellow', color: '#FFC400' },
+  { value: 'green', label: 'Green', color: '#36B37E' },
+  { value: 'forest', label: 'Forest', color: '#00875A' },
+  { value: 'slate', label: 'Slate', color: '#253858' },
+  { value: 'silver', label: 'Silver', color: '#666666' },
+];

@@ -9,30 +9,108 @@
 }
 .title {
   margin-bottom: 40px;
-}
-#customButton {
-  color: black;
-  border: none;
-  border-bottom: 1px solid black;
-  cursor: pointer;
-}
-#customText {
-  margin-left: 10px;
-}
-#realFile:focus + #customButton {
-  outline: 1px solid #000;
+  color: #1a1a1f;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 40px; /* 125% */
 }
 
-.customFileInput {
+.hidden {
+  opacity: 0;
+  height: 0;
+  width: 0;
+  line-height: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.fileContainer {
+  span {
+    color: #1a1a1f;
+    font-family: FiraGO;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+  }
+  .filePickButton {
+    color: #1a1a1f;
+    font-family: FiraGO;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    text-decoration-line: underline;
+    margin-left: 8px;
+    background-color: transparent;
+  }
+}
+
+.parent {
   border-radius: 12px;
   border: 1px dashed #85858d;
   background: #f4f3ff;
-  //   width: 600px;
-  height: 180px;
   flex-shrink: 0;
-  padding-block: 48px;
+  padding: 0 16px;
   margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  row-gap: 24px;
+  height: 180px;
 }
+.fileupload {
+  text-align: center;
+  height: 180px;
+  padding: 1.5rem;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.fileupload p {
+  font-size: 0.87rem;
+  margin-top: 10px;
+  color: #bbcada;
+}
+.fileupload input {
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.uploadBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  height: 56px;
+}
+
+.successUploadContainer {
+  display: flex;
+  gap: 12px;
+}
+
+.successUploadButton {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  background-color: transparent;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
 .container {
   display: flex;
   flex-direction: column;
@@ -41,6 +119,7 @@
   justify-content: center;
 }
 
+// ///////////////////////////////////////////////////////////////////////////
 .img {
   display: block;
   width: 40px;
@@ -96,7 +175,7 @@ input {
 
 .successInput {
   border: 1px solid green;
-  background-color: #faf2f3;
+  background-color: #f8fff8;
 }
 .defaultInput {
   border: 1px solid grey;

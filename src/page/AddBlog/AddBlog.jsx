@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import pick from '../../img/folder-add.svg';
+import gallery from '../../img/gallery.svg';
 import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import clsx from 'clsx';
 import styles from './addBlog.module.scss';
 import infoCircle from '../../img/info-circle.svg';
 import { categoryOptions, categoryStyles } from '../../docs/data';
+import useFormPersist from 'react-hook-form-persist';
+import cutLetter from '../../utils/cutAdditionalLetters';
 
 const addClassBasedOnError = (value, hasError) => {
   if (value.length === 0) {
@@ -15,16 +18,14 @@ const addClassBasedOnError = (value, hasError) => {
 };
 
 const AddBlog = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
   const [authorErrorsState, setAuthorErrorsState] = useState({
     hasMinLettersError: true,
     hasCountOfWordError: true,
     hasGeLettersError: true,
   });
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  };
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedName, setSelectedName] = useState('');
 
   const {
     register,
@@ -33,37 +34,85 @@ const AddBlog = () => {
     handleSubmit,
     formState: { errors, isValid },
     getFieldState,
+    watch,
+    setValue,
     getValues,
   } = useForm({
-    mode: 'onChange',
+    mode: 'all',
     defaultValues: {
       author: '',
       title: '',
       email: '',
       description: '',
       publicateDate: '',
+      file: {},
     },
   });
 
+  useFormPersist('storageKey', {
+    watch,
+    setValue,
+    selectedFile,
+    storage: window.localStorage,
+    exclude: ['file'],
+  });
+
   const onSubmitHandler = (data) => {
-    console.log('submit', data);
+    console.log('submit', { ...data, file: selectedFile });
   };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setSelectedName(file.name);
+  };
+  const removeFile = () => setSelectedFile(null);
 
   return (
     <div className={styles.addBlog}>
       <h1 className={styles.title}>ბლოგის დამატება</h1>
+
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
-        <div className={styles.customFileInput}>
-          <div className={styles.container}>
-            <img className={styles.img} src={pick} alt="fff" />
-            <div>
-              <span id={styles.customText}>{selectedFile ? selectedFile.name : 'ჩააგდეთ ფაილი აქ ან '}</span>
-              <label htmlFor="real-file" id={styles.customButton}>
-                აირჩიეთ ფაილი
-              </label>
-              <input {...register('file')} type="file" id={styles.realFile} style={{ display: 'none' }} onChange={handleFileChange} />
+        <div className={clsx(styles.parent, selectedFile ? styles.uploadBlock : '')}>
+          {!selectedFile ? (
+            <div className={styles.fileupload}>
+              <img src={pick} alt="upload" />
+              <p>
+                ჩააგდეთ ფაილი აქ ან <span>აირჩიეთ ფაილი</span>
+              </p>
+              <Controller
+                control={control}
+                name="file"
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <>
+                    <input onChange={handleFileChange} type="file" />
+                  </>
+                )}
+              />
+
+              <input
+                {...register('file', {
+                  required: true,
+                })}
+                onChange={handleFileChange}
+                type="file"
+              />
             </div>
-          </div>
+          ) : (
+            <div className={styles.uploadBlock}>
+              <div className={styles.successUploadContainer}>
+                <img className={styles.uploadGallery} src={gallery}></img>
+                <h3 className={styles.successUploadTitle}> {cutLetter(selectedName)}</h3>
+              </div>
+              <div className="dflex align-center">
+                <button onClick={removeFile} className={styles.successUploadButton}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7.75781 16.2426L16.2431 7.75736" stroke="#1A1A1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M16.2431 16.2426L7.75781 7.75736" stroke="#1A1A1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className={clsx(styles.field, styles.fieldGeneral)}>
@@ -86,7 +135,7 @@ const AddBlog = () => {
                   },
                 },
               })}
-              className={clsx(getValues('author').length === 0 ? styles.input : errors.author ? styles.failedInput : styles.successInput)}
+              className={getValues('author').length === 0 ? styles.input : errors.author ? styles.failedInput : styles.successInput}
               type="text"
               placeholder="შეიყვანეთ ავტორი"
             />
@@ -108,7 +157,7 @@ const AddBlog = () => {
                   minLength: (value) => value.trim().length >= 2,
                 },
               })}
-              className={clsx(getValues('title').length === 0 ? styles.input : errors.title ? styles.failedInput : styles.successInput)}
+              className={getValues('title').length === 0 ? styles.input : errors.title ? styles.failedInput : styles.successInput}
               id="header"
               type="text"
               placeholder="შეიყვანეთ სათაური"
