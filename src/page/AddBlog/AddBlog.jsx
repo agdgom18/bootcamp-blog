@@ -1,12 +1,13 @@
 import { useState, useRef } from 'react';
 import pick from '../../img/folder-add.svg';
 import gallery from '../../img/gallery.svg';
+import logo from '../../img/logo.svg';
+
 import { useForm, Controller } from 'react-hook-form';
-import Select from 'react-select';
 import clsx from 'clsx';
 import styles from './addBlog.module.scss';
 import infoCircle from '../../img/info-circle.svg';
-import { categoryOptions, categoryStyles, fetchOptions } from '../../docs/data';
+import { categoryStyles, fetchOptions } from '../../utils/fetchOpions';
 import useFormPersist from 'react-hook-form-persist';
 import cutLetter from '../../utils/cutAdditionalLetters';
 import { Link } from 'react-router-dom';
@@ -49,7 +50,7 @@ const AddBlog = () => {
       category: [],
     },
   });
-  console.log(errors);
+
   useFormPersist('storageKey', {
     watch,
     setValue,
@@ -67,15 +68,18 @@ const AddBlog = () => {
 
   return (
     <div className={styles.addBlog}>
+      <div className={styles.logoImgContainer}>
+        <img className={styles.logo} src={logo} alt="logo" />
+      </div>
       <h1 className={styles.title}>ბლოგის დამატება</h1>
-      <Link to={'/'} className="backNavButton"></Link>
+      <Link to={'/'} className="back-nav-button"></Link>
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
         <div className={clsx(styles.parent, selectedName ? styles.uploadBlock : '')}>
           {!selectedName ? (
             <div className={styles.fileupload}>
               <img src={pick} alt="upload" />
               <p>
-                ჩააგდეთ ფაილი აქ ან <span>აირჩიეთ ფაილი</span>
+                ჩააგდეთ ფაილი აქ ან <span className={styles.pickFileButton}>აირჩიეთ ფაილი</span>
               </p>
               <Controller
                 control={control}
@@ -207,6 +211,7 @@ const AddBlog = () => {
                 getValues('publicateDate').length === 0 ? styles.input : errors.publicateDate ? styles.failedInput : styles.successInput,
               )}
             />
+            <p className={styles.emailDesc}>{errors?.publicateDate?.message}</p>
           </div>
           <div className={styles.categoryContainer}>
             <label htmlFor="country-select">კატეგორია *</label>
@@ -230,7 +235,7 @@ const AddBlog = () => {
                     cacheOptions
                     defaultOptions
                     loadOptions={fetchOptions}
-                    className="react-select-container"
+                    className={`react-select-container ${!!error ? 'notValid' : getValues('category').length ? 'valid' : ''}`}
                     classNamePrefix="react-select"
                   />
                   <p className={styles.emailDesc}>{error?.message}</p>

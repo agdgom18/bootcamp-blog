@@ -2,19 +2,22 @@ import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './page/Home';
 import './scss/style.scss';
-import Blog from './page/Blog';
 import React, { createContext } from 'react';
 import PrivateRoutes from './utils/PrivateRoutes';
 import AddBlog from './page/AddBlog/AddBlog';
+import { useLocation } from 'react-router-dom';
 
 export const Context = createContext();
 
 function App() {
+  // checking path to show header
+  const currentPath = useLocation().pathname;
+  const shouldDisplayHeader = currentPath !== '/add';
   const [signedIn, setSignedIn] = React.useState(false);
   return (
     <>
       <Context.Provider value={[signedIn, setSignedIn]}>
-        <Header />
+        {shouldDisplayHeader && <Header />}
         <Routes>
           <Route path="/" element={<Home />} exact />
           <Route element={<PrivateRoutes />}>

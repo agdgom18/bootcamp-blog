@@ -19,17 +19,19 @@ const Filters = () => {
   }
   return (
     <section className={styles.filters}>
-      <ul>
-        {data.map((el) => {
-          return (
-            <li key={el.id}>
-              <button className={styles.button} style={{ backgroundColor: el.background_color, color: el.text_color }}>
-                {el.title}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className={styles.filetersContainer}>
+        <ul className={styles.filterList}>
+          {data.map((el) => {
+            return (
+              <li className={styles.filterListItem} key={el.id}>
+                <button className={styles.button} style={{ backgroundColor: el.background_color, color: el.text_color }}>
+                  {el.title}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </section>
   );
 };

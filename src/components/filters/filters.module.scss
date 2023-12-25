@@ -1,16 +1,20 @@
-ul {
+.filetersContainer {
   display: flex;
   justify-content: center;
-  column-gap: 24px;
-  align-items: center;
-  flex-wrap: wrap;
-  row-gap: 24px;
 }
 
-li {
+.filterList {
   display: flex;
-  padding: 8px 16px;
-  align-items: flex-start;
+  width: 676px;
+  overflow-x: auto;
+  white-space: nowrap;
+  column-gap: 10px;
+  justify-content: flex-start;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.filterListItem {
   border-radius: 30px;
 }
 
@@ -21,8 +25,34 @@ li {
   justify-content: center;
   align-items: center;
   border-radius: 8px;
+  white-space: nowrap;
 }
 
-.filters {
-  margin-bottom: 64px;
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #0f93b1 #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+.filterList::-webkit-scrollbar {
+  width: 3px;
+}
+
+.filterList::-webkit-scrollbar-track {
+  background: #f3f2fa;
+}
+
+.filterList::-webkit-scrollbar-thumb {
+  background-color: #f93b1d;
+  border-radius: 10px;
+  border: 3px solid #f3f2fa;
+}
+
+@media (max-width: 880px) {
+  .filterList {
+    width: 100%;
+    padding: 0;
+  }
 }

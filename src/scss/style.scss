@@ -37,10 +37,17 @@ button {
   margin: 0 !important;
   padding: 0 !important;
 }
+.react-select-container.valid .react-select__control {
+  border: 1px solid green;
+}
+
+.react-select-container.notValid .react-select__control {
+  border: 1px solid red;
+}
 
 .back-nav-button {
   position: absolute;
-  top: 9%;
+  top: 17%;
   left: 9%;
   border-radius: 50%;
   background-color: #e4e3eb;
