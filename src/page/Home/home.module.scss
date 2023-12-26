@@ -4,15 +4,42 @@
   background-color: #f3f2fa;
   padding-top: 64px;
   padding-inline: 76px;
-  height: 1200px;
+  padding-bottom: 50px;
+  width: 100%;
 }
 .banner {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 64px;
+  flex-wrap: wrap;
 }
 
 h2 {
   @include header;
+}
+
+.cardList {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  column-gap: 20px;
+}
+
+.cardList {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 20px;
+}
+
+@media (max-width: 890px) {
+  .cardList {
+    flex-direction: column;
+  }
+  .banner {
+    flex-direction: column;
+    row-gap: 20px;
+  }
 }

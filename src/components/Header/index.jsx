@@ -7,6 +7,7 @@ import infoCircle from '../../img/info-circle.svg';
 import succsessCircle from '../../img/succsess-circle.svg';
 import axios from 'axios';
 import { Context } from '../../App';
+import { Link } from 'react-router-dom';
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -50,7 +51,9 @@ const Header = () => {
           შესვლა
         </button>
       ) : (
-        <button className={styles.button}>დაამატე ბლოგი</button>
+        <Link to={'./add'} className={styles.linkToAddBlog}>
+          დაამატე ბლოგი
+        </Link>
       )}
 
       <Modal isOpen={isOpen} onClose={() => changeModalStatus(false)}>
@@ -67,6 +70,7 @@ const Header = () => {
               <div className={styles.formControl}>
                 <label htmlFor="email">ელ-ფოსტა:</label>
                 <input
+                  className={styles.input}
                   style={{ border: errors?.email ? '1px solid red' : '' }}
                   type="email"
                   id="email"

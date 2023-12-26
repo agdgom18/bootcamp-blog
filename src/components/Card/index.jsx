@@ -2,35 +2,38 @@ import React from 'react';
 import photo from '../../img/card-image.jpg';
 import { Link } from 'react-router-dom';
 import styles from './card.module.scss';
-import axios from 'axios';
 
-// async function getBlogs() {
-//   const res = await axios.get('https://api.blog.redberryinternship.ge/api/blogs', {
-//     headers: {
-//       Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-//     },
-//   });
-//   console.log(res);
-//   return res;
-// }
+/* 
+title
+description
+image
+author
+publish_date
+categories
+email
 
-const Card = () => {
-  // getBlogs();
+*/
+
+const Card = ({ title, description, image, author, publish_date, categories }) => {
   return (
     <div className={styles.card}>
-      <img className={styles.img} src={photo} alt="card-photo" />
+      <img className={styles.img} src={image} alt="card-photo" />
       <div className={styles.author}>
-        <h4>ნია გოგსაძე</h4>
-        <p>02.11.2023</p>
+        <h4>{author}</h4>
+        <p>{publish_date}</p>
       </div>
-      <h3 className={styles.title}>EOMM-ის მრჩეველთა საბჭოს ნინო ეგაძე შეუერთდა</h3>
+      <h3 className={styles.title}>{title}</h3>
       <ul className={styles.filters}>
-        <li>მარკეტი</li>
-        <li>აპლიკაცია</li>
-        <li>ხელოვნური ინტელექტი</li>
+        {categories.map(({ id, title, text_color, background_color }) => {
+          return (
+            <li style={{ color: text_color, backgroundColor: background_color }} key={id}>
+              {title}
+            </li>
+          );
+        })}
       </ul>
-      <p className={styles.description}>6 თვის შემდეგ ყველის ბრმა დეგუსტაციის დროც დადგა. მაქსიმალური სიზუსტისთვის, ეს პროცესი...</p>
-      <div className={styles.link}>
+      <p className={styles.description}>{description}</p>
+      <Link className={styles.link}>
         <span>სრულად ნახვა</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -38,7 +41,7 @@ const Card = () => {
             fill="#5D37F3"
           />
         </svg>
-      </div>
+      </Link>
     </div>
   );
 };

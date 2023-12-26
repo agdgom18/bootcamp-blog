@@ -364,3 +364,39 @@ p {
   line-height: 20px;
   text-decoration: none;
 }
+
+@media (max-width: 669px) {
+  .parent {
+    max-width: 400px;
+    margin-inline: auto;
+  }
+
+  .fieldDescription p {
+    margin-left: 7px;
+  }
+  textarea {
+    width: 400px;
+    margin-inline: auto;
+  }
+
+  .fieldDate {
+    flex-direction: column;
+  }
+  .buttonContainer {
+    justify-content: flex-start;
+  }
+  .button {
+    width: 400px;
+  }
+}
+
+@media (max-width: 611px) {
+  .fieldGeneral {
+    flex-direction: column;
+    row-gap: 20px;
+    align-items: center;
+  }
+  input {
+    min-width: 410px;
+  }
+}

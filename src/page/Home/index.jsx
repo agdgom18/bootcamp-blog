@@ -4,6 +4,7 @@ import Filters from '../../components/filters';
 import bannerPhoto from '../../img/Blog-1024x355 1.png';
 import styles from './home.module.scss';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 const fetchBlogs = async () => {
   const res = await axios.get('https://api.blog.redberryinternship.ge/api/blogs', {
     headers: {
@@ -16,9 +17,11 @@ const fetchBlogs = async () => {
 };
 
 const Home = () => {
-  React.useEffect(() => {
-    fetchBlogs();
-  }, []);
+  const { data, isLoading } = useQuery({ queryKey: ['blogs'], queryFn: fetchBlogs });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <main className={styles.main}>
@@ -26,8 +29,23 @@ const Home = () => {
         <h2>ბლოგი</h2>
         <img src={bannerPhoto} alt="banner" />
       </section>
-      <Filters />
-      <Card />
+      {/* <Filters /> */}
+
+      <div className={styles.cardList}>
+        {data.map(({ id, title, description, image, author, publish_date, categories }) => {
+          return (
+            <Card
+              key={id}
+              title={title}
+              description={description}
+              image={image}
+              author={author}
+              publish_date={publish_date}
+              categories={categories}
+            />
+          );
+        })}
+      </div>
     </main>
   );
 };
