@@ -4,7 +4,7 @@ import gallery from '../../img/gallery.svg';
 import logo from '../../img/logo.svg';
 import successIcon from '../../img/succsess-circle.svg';
 import Modal from '../../components/Modal/Modal';
-
+import postBlog from '../../utils/postBlog';
 import { useForm, Controller } from 'react-hook-form';
 import clsx from 'clsx';
 import styles from './addBlog.module.scss';
@@ -31,12 +31,11 @@ const AddBlog = () => {
 
   //  Modal feature
   const [isOpen, setIsOpen] = useState(false);
-
-  const changeModalStatus = (status) => {
-    document.body.style.overflowY = status ? 'hidden' : 'hidden';
-    setIsOpen(status);
+  const [serverError, setServerError] = useState(false);
+  const closeModal = () => {
+    document.body.style.overflowY = 'auto';
+    setIsOpen(false);
   };
-
   const [selectedName, setSelectedName] = useState('');
 
   const {
@@ -55,24 +54,37 @@ const AddBlog = () => {
       title: '',
       email: '',
       description: '',
-      publicateDate: '',
-      file: {},
-      category: [],
+      publish_date: '',
+      image: {},
+      categories: [],
     },
   });
 
-  useFormPersist('storageKey', {
+  useFormPersist('formData', {
     watch,
     setValue,
     storage: window.localStorage,
   });
 
-  const onSubmitHandler = (data) => {
-    console.log('submit', data);
+  const onSubmitHandler = async (data) => {
+    const dataToServer = {
+      ...data,
+      categories: data.categories.map((el) => el.value),
+    };
+
+    postBlog(dataToServer)
+      .then((res) => {})
+      .catch((error) => {
+        setServerError(true);
+      })
+      .finally(() => {
+        setIsOpen(true);
+        document.body.style.overflowY = 'hidden';
+      });
   };
 
-  const removeFile = () => {
-    resetField('file');
+  const removeImage = () => {
+    resetField('image');
     setSelectedName(null);
   };
 
@@ -93,15 +105,15 @@ const AddBlog = () => {
               </p>
               <Controller
                 control={control}
-                name="file"
+                name="image"
                 rules={{
                   required: {
                     value: true,
-                    message: 'აირჩიე კატეგორია',
+                    message: 'ატვირთე ფაილი',
                   },
                   validate: {
                     checkOnEmpty: (value) => {
-                      return value !== null;
+                      return value != null;
                     },
                   },
                 }}
@@ -116,7 +128,7 @@ const AddBlog = () => {
                         }}
                         type="file"
                       />
-                      <p>{errors?.file?.message}</p>
+                      <p>{errors?.image?.message}</p>
                     </>
                   );
                 }}
@@ -129,7 +141,7 @@ const AddBlog = () => {
                 <h3 className={styles.successUploadTitle}> {cutLetter(selectedName)}</h3>
               </div>
               <div className="dflex align-center">
-                <button onClick={removeFile} className={styles.successUploadButton}>
+                <button onClick={removeImage} className={styles.successUploadButton}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M7.75781 16.2426L16.2431 7.75736" stroke="#1A1A1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M16.2431 16.2426L7.75781 7.75736" stroke="#1A1A1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -171,7 +183,7 @@ const AddBlog = () => {
             </ul>
           </div>
 
-          <Modal isOpen={isOpen} onClose={() => changeModalStatus(false)}>
+          <Modal isOpen={isOpen} onClose={() => closeModal()}>
             <div className={styles.successBLock}>
               <img className={styles.successCircle} src={successIcon} alt="success icon" />
               <h3 className={styles.successTitle}>ჩანაწერი წარმატებით დაემატა</h3>
@@ -224,21 +236,19 @@ const AddBlog = () => {
           <div className={styles.dateContainer}>
             <label htmlFor="date">გამოქვეყნების თარიღი *</label>
             <input
-              {...register('publicateDate', {
+              {...register('publish_date', {
                 required: 'აირჩიე თარიღი',
               })}
               type="date"
-              className={clsx(
-                getValues('publicateDate').length === 0 ? styles.input : errors.publicateDate ? styles.failedInput : styles.successInput,
-              )}
+              className={clsx(getValues('publish_date').length === 0 ? styles.input : errors.publish_date ? styles.failedInput : styles.successInput)}
             />
-            <p className={styles.emailDesc}>{errors?.publicateDate?.message}</p>
+            <p className={styles.emailDesc}>{errors?.publish_date?.message}</p>
           </div>
           <div className={styles.categoryContainer}>
             <label htmlFor="country-select">კატეგორია *</label>
             <Controller
               control={control}
-              name="category"
+              name="categories"
               rules={{
                 required: {
                   value: true,
@@ -256,7 +266,7 @@ const AddBlog = () => {
                     cacheOptions
                     defaultOptions
                     loadOptions={fetchOptions}
-                    className={`react-select-container ${!!error ? 'notValid' : getValues('category').length ? 'valid' : ''}`}
+                    className={`react-select-container ${!!error ? 'notValid' : getValues('categories').length ? 'valid' : ''}`}
                     classNamePrefix="react-select"
                   />
                   <p className={styles.emailDesc}>{error?.message}</p>
@@ -298,7 +308,7 @@ const AddBlog = () => {
           )}
         </div>
         <div className={styles.buttonContainer}>
-          <button onClick={() => changeModalStatus(true)} className={clsx(styles.button, isValid ? styles.buttonSuccess : '')}>
+          <button className={clsx(styles.button, isValid ? styles.buttonSuccess : '')} disabled={!isValid}>
             გამოქვეყნება
           </button>
         </div>
