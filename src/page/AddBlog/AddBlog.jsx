@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import pick from '../../img/folder-add.svg';
 import gallery from '../../img/gallery.svg';
 import logo from '../../img/logo.svg';
+import successIcon from '../../img/succsess-circle.svg';
+import Modal from '../../components/Modal/Modal';
 
 import { useForm, Controller } from 'react-hook-form';
 import clsx from 'clsx';
@@ -26,6 +28,14 @@ const AddBlog = () => {
     hasCountOfWordError: false,
     hasGeLettersError: false,
   });
+
+  //  Modal feature
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeModalStatus = (status) => {
+    document.body.style.overflowY = status ? 'hidden' : 'hidden';
+    setIsOpen(status);
+  };
 
   const [selectedName, setSelectedName] = useState('');
 
@@ -160,6 +170,17 @@ const AddBlog = () => {
               <li className={addClassBasedOnError(getValues('author'), authorErrorsState.hasGeLettersError)}>მხოლოდ ქართული სიმბოლოები</li>
             </ul>
           </div>
+
+          <Modal isOpen={isOpen} onClose={() => changeModalStatus(false)}>
+            <div className={styles.successBLock}>
+              <img className={styles.successCircle} src={successIcon} alt="success icon" />
+              <h3 className={styles.successTitle}>ჩანაწერი წარმატებით დაემატა</h3>
+              <Link to={'/'} className={styles.successLink}>
+                <span> მთავარ გვერდზე დაბრუნება</span>
+              </Link>
+            </div>
+          </Modal>
+
           <div className={styles.headerField}>
             <label htmlFor="header">სათაური *</label>
             <input
@@ -277,7 +298,9 @@ const AddBlog = () => {
           )}
         </div>
         <div className={styles.buttonContainer}>
-          <button className={clsx(styles.button, isValid ? styles.buttonSuccess : '')}>გამოქვეყნება</button>
+          <button onClick={() => changeModalStatus(true)} className={clsx(styles.button, isValid ? styles.buttonSuccess : '')}>
+            გამოქვეყნება
+          </button>
         </div>
       </form>
     </div>

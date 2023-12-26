@@ -8,8 +8,12 @@ import succsessCircle from '../../img/succsess-circle.svg';
 import axios from 'axios';
 import { Context } from '../../App';
 const Header = () => {
-  const [isModalOpen, setModalOpen] = useState(false);
-  const changeModalStatus = () => setModalOpen((prev) => !prev);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeModalStatus = (status) => {
+    document.body.style.overflowY = status ? 'hidden' : 'scroll';
+    setIsOpen(status);
+  };
   //Context for validation
   const [signedIn, setSignedIn] = useContext(Context);
   // FORM
@@ -49,7 +53,7 @@ const Header = () => {
         <button className={styles.button}>დაამატე ბლოგი</button>
       )}
 
-      <Modal isOpen={isModalOpen} onClose={changeModalStatus}>
+      <Modal isOpen={isOpen} onClose={() => changeModalStatus(false)}>
         {signedIn ? (
           <div className={styles.succsessBLock}>
             <img className={styles.succsessCircle} src={succsessCircle} alt="ok" />

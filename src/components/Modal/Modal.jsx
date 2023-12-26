@@ -5,7 +5,15 @@ const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) {
     return null;
   }
+  const openModal = () => {
+    setModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
 
+  const closeModal = () => {
+    setModalOpen(false);
+    document.body.style.overflow = 'auto';
+  };
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
