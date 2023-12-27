@@ -67,3 +67,10 @@ button {
     transform: translateX(3px) rotate(-45deg);
   }
 }
+
+@media (max-width: 550px) {
+  .back-nav-button {
+    top: 2%;
+    left: 12%;
+  }
+}

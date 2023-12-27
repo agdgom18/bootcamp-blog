@@ -386,7 +386,7 @@ p {
     justify-content: flex-start;
   }
   .button {
-    width: 400px;
+    width: 412px;
   }
 }
 
@@ -397,6 +397,12 @@ p {
     align-items: center;
   }
   input {
-    min-width: 410px;
+    width: 410px;
+  }
+}
+
+@media (max-width: 450px) {
+  .addBlog {
+    margin-inline: auto;
   }
 }

@@ -6,11 +6,15 @@ import React, { createContext } from 'react';
 import PrivateRoutes from './utils/PrivateRoutes';
 import AddBlog from './page/AddBlog/AddBlog';
 import { useLocation } from 'react-router-dom';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import Blog from './page/Blog';
 
 export const Context = createContext();
 
 function App() {
   // checking path to show header
+
+  const { setItem } = useLocalStorage('authorized');
   const currentPath = useLocation().pathname;
   const shouldDisplayHeader = currentPath !== '/add';
   const [signedIn, setSignedIn] = React.useState(false);
@@ -20,6 +24,7 @@ function App() {
         {shouldDisplayHeader && <Header />}
         <Routes>
           <Route path="/" element={<Home />} exact />
+          <Route path="/post/:id" element={<Blog />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/add" element={<AddBlog />} />
           </Route>

@@ -42,6 +42,7 @@ const Home = () => {
               author={author}
               publish_date={publish_date}
               categories={categories}
+              id={id}
             />
           );
         })}

@@ -47,6 +47,7 @@ const AddBlog = () => {
     setValue,
     getValues,
     resetField,
+    reset,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -81,6 +82,8 @@ const AddBlog = () => {
         setIsOpen(true);
         document.body.style.overflowY = 'hidden';
       });
+
+    reset();
   };
 
   const removeImage = () => {

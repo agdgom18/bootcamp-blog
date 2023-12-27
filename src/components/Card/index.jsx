@@ -1,20 +1,8 @@
 import React from 'react';
-import photo from '../../img/card-image.jpg';
 import { Link } from 'react-router-dom';
 import styles from './card.module.scss';
 
-/* 
-title
-description
-image
-author
-publish_date
-categories
-email
-
-*/
-
-const Card = ({ title, description, image, author, publish_date, categories }) => {
+const Card = ({ title, description, image, author, publish_date, categories, id }) => {
   return (
     <div className={styles.card}>
       <img className={styles.img} src={image} alt="card-photo" />
@@ -24,7 +12,7 @@ const Card = ({ title, description, image, author, publish_date, categories }) =
       </div>
       <h3 className={styles.title}>{title}</h3>
       <ul className={styles.filters}>
-        {categories.map(({ id, title, text_color, background_color }) => {
+        {categories?.map(({ id, title, text_color, background_color }) => {
           return (
             <li style={{ color: text_color, backgroundColor: background_color }} key={id}>
               {title}
@@ -33,7 +21,7 @@ const Card = ({ title, description, image, author, publish_date, categories }) =
         })}
       </ul>
       <p className={styles.description}>{description}</p>
-      <Link className={styles.link}>
+      <Link to={`/post/${id}`} className={styles.link}>
         <span>სრულად ნახვა</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
