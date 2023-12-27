@@ -3,23 +3,19 @@ import React from 'react';
 import Filters from '../../components/filters';
 import bannerPhoto from '../../img/Blog-1024x355 1.png';
 import styles from './home.module.scss';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
-const fetchBlogs = async () => {
-  const res = await axios.get('https://api.blog.redberryinternship.ge/api/blogs', {
-    headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-    },
-  });
-  const result = res.data.data;
-  console.log(result);
-  return result;
-};
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchData } from '../../store/dataSlice';
 
 const Home = () => {
-  const { data, isLoading } = useQuery({ queryKey: ['blogs'], queryFn: fetchBlogs });
+  const { loading, data } = useSelector((state) => state.dataSlice);
 
-  if (isLoading) {
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
@@ -29,7 +25,7 @@ const Home = () => {
         <h2>ბლოგი</h2>
         <img src={bannerPhoto} alt="banner" />
       </section>
-      {/* <Filters /> */}
+      <Filters />
 
       <div className={styles.cardList}>
         {data.map(({ id, title, description, image, author, publish_date, categories }) => {

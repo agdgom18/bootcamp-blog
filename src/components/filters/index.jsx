@@ -1,20 +1,17 @@
 import React from 'react';
 import styles from './filters.module.scss';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
-
-async function fetchFilters() {
-  const res = await axios.get('https://api.blog.redberryinternship.ge/api/categories', {
-    headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-    },
-  });
-
-  return res.data.data;
-}
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCategories } from '../../store/categoriesSlice';
 const Filters = () => {
-  const { data, isLoading } = useQuery({ queryKey: ['filters'], queryFn: fetchFilters });
-  if (isLoading) {
+  const { loading, data } = useSelector((state) => state.categoriesSlice);
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  if (loading) {
     return <div>Loading...</div>;
   }
   return (
@@ -23,9 +20,9 @@ const Filters = () => {
         <ul className={styles.filterList}>
           {data.map((el) => {
             return (
-              <li className={styles.filterListItem} key={el.id}>
-                <button className={styles.button} style={{ backgroundColor: el.background_color, color: el.text_color }}>
-                  {el.title}
+              <li key={el.value} className={styles.filterListItem}>
+                <button className={styles.button} style={{ backgroundColor: el.color, color: '#fff' }}>
+                  {el.label}
                 </button>
               </li>
             );

@@ -3,11 +3,19 @@ import img from '../../img/card-image.jpg';
 import { Link } from 'react-router-dom';
 import styles from './blog.module.scss';
 import slideControl from '../../img/back-arrow.svg';
-import Card from '../../components/Card';
 import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchBlog } from '../../store/currentBlogSlice';
+
 const Blog = () => {
   const { id } = useParams();
-  console.log(id);
+  const { blog } = useSelector((state) => state.currentBlogSlice);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchBlog(id));
+  }, [dispatch]);
+
   return (
     <div className={styles.blog}>
       <Link to={'/'}>
@@ -19,30 +27,22 @@ const Blog = () => {
         </svg>
       </Link>
       <div className={styles.cardBlog}>
-        <img className={styles.img} src={img} alt="photo" />
+        <img className={styles.img} src={blog.image} alt="photo" />
         <div className={styles.author}>
-          <h4>ნია გოგსაძე</h4>
-          <p>02.11.2023</p>
+          <h4>{blog.author}</h4>
+          <p>{blog.publish_date}</p>
         </div>
         <h3 className={styles.title}>EOMM-ის მრჩეველთა საბჭოს ნინო ეგაძე შეუერთდა</h3>
         <ul className={styles.filters}>
-          <li>მარკეტი</li>
-          <li>აპლიკაცია</li>
-          <li>ხელოვნური ინტელექტი</li>
+          {blog?.categories?.map(({ id, title, text_color, background_color }) => {
+            return (
+              <li style={{ color: text_color, backgroundColor: background_color }} key={id}>
+                {title}
+              </li>
+            );
+          })}
         </ul>
-        <p className={styles.description}>
-          6 თვის შემდეგ ყველის ბრმა დეგუსტაციის დროც დადგა. მაქსიმალური სიზუსტისთვის, ეს პროცესი ორჯერ გაიმეორეს და ორივეჯერ იმ ყველს მიენიჭა
-          უპირატესობა, რომელსაც ჰიპ-ჰოპს ასმენინებდნენ. „მუსიკალური ენერგია პირდაპირ ყველის შუაგულში რეზონირებდა“, — აღნიშნა ბერნის ხელოვნების
-          უნივერსიტეტის წარმომადგენელმა, მაიკლ ჰერენბერგმა. რა თქმა უნდა, ეს ერთი კვლევა საკმარისი არ არის საბოლოო დასკვნების გამოსატანად. სანაცვლოდ,
-          მეცნიერებს სურთ, უშუალოდ ჰიპ-ჰოპის ჟანრის სხვადასხვა მუსიკა მოასმენინონ რამდენიმე ყველს და უკვე ისინი შეაჯიბრონ ერთმანეთს. აქვე საგულისხმოა,
-          რომ როგორც ბერნის მეცნიერები განმარტავენ, ექსპერიმენტს საფუძვლად არა ყველის გაუმჯობესებული წარმოება, არამედ კულტურული საკითხები დაედო. მათი
-          თქმით, ადამიანებს უყვართ ყველი და მუსიკა, ამიტომაც საინტერესოა ამ ორის კავშირის დანახვა.
-          <br />
-          <br />6 თვის შემდეგ ყველის ბრმა დეგუსტაციის დროც დადგა. მაქსიმალური სიზუსტისთვის, ეს პროცესი ორჯერ გაიმეორეს და ორივეჯერ იმ ყველს მიენიჭა
-          უპირატესობა, რომელსაც ჰიპ-ჰოპს ასმენინებდნენ. „მუსიკალური ენერგია პირდაპირ ყველის შუაგულში რეზონირებდა“, — აღნიშნა ბერნის ხელოვნების
-          უნივერსიტეტის წარმომადგენელმა, მაიკლ ჰერენბერგმა. რა თქმა უნდა, ეს ერთი კვლევა საკმარისი არ არის საბოლოო დასკვნების გამოსატანად. სანაცვლოდ,
-          მეცნიერებს სურთ, უშუალოდ ჰიპ-ჰოპის ჟანრის სხვადასხვა მუსიკა მოასმენინონ რამდენიმე ყველს და უკვე ისინი შეაჯიბრონ ერთმანეთს.
-        </p>
+        <p className={styles.description}>{blog.description}</p>
       </div>
 
       <div className={styles.similiar}>
