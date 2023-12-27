@@ -2,6 +2,7 @@
 
 .blog {
   padding-bottom: 100px;
+  position: relative;
 }
 .cardBlog {
   max-width: 720px;
@@ -9,6 +10,11 @@
   margin-bottom: 100px;
 }
 
+.backLink {
+  position: absolute;
+  left: 10%;
+  top: 20px;
+}
 .img {
   margin-bottom: 24px;
   border-radius: 12px;

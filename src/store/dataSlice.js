@@ -13,7 +13,8 @@ export const fetchData = createAsyncThunk('blogs', async () => {
       Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
     },
   });
-  const result = res.data.data;
+
+  const result = res.data.data.filter((el) => new Date(el.publish_date).getTime() <= new Date().getTime());
   return result;
 });
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 const initialState = {
   loading: true,
   blog: {},
+  similarBlogs: [],
   error: '',
 };
 

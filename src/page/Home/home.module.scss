@@ -28,10 +28,10 @@ h2 {
 
 .cardList {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  row-gap: 20px;
+  gap: 30px;
 }
 
 @media (max-width: 890px) {
