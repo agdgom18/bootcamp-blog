@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import logo from '../../img/logo.svg';
 import styles from './header.module.scss';
 import Modal from '../Modal/Modal';
@@ -8,7 +8,7 @@ import succsessCircle from '../../img/succsess-circle.svg';
 import axios from 'axios';
 import { Context } from '../../App';
 import { Link } from 'react-router-dom';
-
+import Cookies from 'js-cookie';
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,6 +23,9 @@ const Header = () => {
   const { register, handleSubmit, formState, reset } = form;
   const [serverError, setServerError] = React.useState(null);
   const { errors } = formState;
+  useEffect(() => {
+    Cookies.set('signedIn', JSON.stringify(signedIn));
+  }, [signedIn]);
 
   const onSubmitHandler = async ({ email }) => {
     try {

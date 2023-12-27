@@ -6,18 +6,18 @@ import React, { createContext } from 'react';
 import PrivateRoutes from './utils/PrivateRoutes';
 import AddBlog from './page/AddBlog/AddBlog';
 import { useLocation } from 'react-router-dom';
-import { useLocalStorage } from './hooks/useLocalStorage';
 import Blog from './page/Blog';
+import Cookies from 'js-cookie';
 
 export const Context = createContext();
 
 function App() {
   // checking path to show header
 
-  const { setItem } = useLocalStorage('authorized');
   const currentPath = useLocation().pathname;
   const shouldDisplayHeader = currentPath !== '/add';
-  const [signedIn, setSignedIn] = React.useState(false);
+
+  const [signedIn, setSignedIn] = React.useState(Boolean(Cookies.get('signedIn')));
   return (
     <>
       <Context.Provider value={[signedIn, setSignedIn]}>

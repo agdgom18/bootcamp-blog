@@ -1,9 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
+const savedFilters = Cookies.get('filters');
+
 const initialState = {
   loading: true,
   data: [],
   error: '',
+  filterBlogArr: [],
+  filterArr: savedFilters ? JSON.parse(savedFilters) : [],
+};
+
+// helper function
+const filterDataByFilterArr = (arr, filterArr) => {
+  if (filterArr.length === 0) {
+    return arr;
+  }
+  return arr.filter((item) => filterArr.some((filter) => item.categories.some(({ title }) => title === filter)));
 };
 
 // Generates pending , fulfilled and rejected action types
@@ -18,6 +32,11 @@ export const fetchData = createAsyncThunk('blogs', async () => {
   return result;
 });
 
+export const filterData = (filterValue) => ({
+  type: 'FILTER_BLOGS',
+  payload: filterValue,
+});
+
 const dataSlice = createSlice({
   name: 'blogs',
   initialState,
@@ -29,12 +48,23 @@ const dataSlice = createSlice({
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.loading = false;
       state.data = action.payload;
+      state.filterBlogArr = action.payload;
       state.error = '';
     });
     builder.addCase(fetchData.rejected, (state, action) => {
       state.loading = false;
       state.data = [];
       state.error = action.error.message;
+    });
+    builder.addCase('FILTER_BLOGS', (state, action) => {
+      const filter = action.payload;
+      let newFilterArr = [];
+      state.filterArr.includes(filter)
+        ? (newFilterArr = state.filterArr.filter((el) => el !== filter))
+        : (newFilterArr = [...state.filterArr, filter]);
+
+      state.filterArr = [...newFilterArr];
+      state.filterBlogArr = filterDataByFilterArr(state.data, newFilterArr);
     });
   },
 });

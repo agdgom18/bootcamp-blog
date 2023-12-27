@@ -1,0 +1,46 @@
+.nav {
+  display: flex;
+  justify-content: space-around;
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    column-gap: 10px;
+  }
+}
+
+.previous,
+.next {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.next {
+  background-color: #5d37f3;
+  transform: rotate(180deg);
+}
+
+.next svg path {
+  fill: white;
+}
+
+.slides {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.secondTitle {
+  color: #1a1a1f;
+  font-family: FiraGO;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 40px;
+  margin-bottom: 40px;
+}
