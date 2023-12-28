@@ -18,7 +18,7 @@ const Filters = ({ filterby, filterArr }) => {
     <section className={styles.filters}>
       <div className={styles.filetersContainer}>
         <ul className={styles.filterList}>
-          {categories.map(({ value, color, label }) => {
+          {categories.map(({ value, color, label, textColor }) => {
             return (
               <li key={value} className={styles.filterListItem}>
                 <button
@@ -26,7 +26,7 @@ const Filters = ({ filterby, filterArr }) => {
                   className={styles.button}
                   style={{
                     backgroundColor: color,
-                    color: '#fff',
+                    color: textColor,
                     border: `2px solid ${filterArr.includes(label) ? '#000' : 'transparent'}`,
                   }}>
                   {label}

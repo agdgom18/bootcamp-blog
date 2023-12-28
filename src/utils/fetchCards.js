@@ -7,7 +7,6 @@ async function fetchFilters(url) {
     },
   });
 
-  console.log(res.data.data);
   return res.data.data;
 }
 

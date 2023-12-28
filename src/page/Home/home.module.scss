@@ -20,23 +20,16 @@ h2 {
 }
 
 .cardList {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  column-gap: 20px;
-}
-
-.cardList {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 408px));
+  justify-items: center;
+  align-items: start;
   justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 30px;
+  gap: 56px 32px;
 }
 
 @media (max-width: 890px) {
   .cardList {
-    flex-direction: column;
   }
   .banner {
     flex-direction: column;

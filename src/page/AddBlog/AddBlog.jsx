@@ -190,7 +190,7 @@ const AddBlog = () => {
             <div className={styles.successBLock}>
               <img className={styles.successCircle} src={successIcon} alt="success icon" />
               <h3 className={styles.successTitle}>ჩანაწერი წარმატებით დაემატა</h3>
-              <Link to={'/'} className={styles.successLink}>
+              <Link onClick={() => (document.body.style.overflowY = 'auto')} to={'/'} className={styles.successLink}>
                 <span> მთავარ გვერდზე დაბრუნება</span>
               </Link>
             </div>

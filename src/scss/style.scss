@@ -6,12 +6,15 @@
 html,
 body {
   font-family: 'FiraGO', sans-serif;
+  background-color: #e4e3eb;
 }
 
 .dflex {
   display: flex;
 }
-
+.gap-1 {
+  gap: 5px;
+}
 .align-center {
   align-items: center;
 }
@@ -48,10 +51,10 @@ button {
 
 .back-nav-button {
   position: absolute;
-  top: 16%;
+  top: 100px;
   left: 9%;
   border-radius: 50%;
-  background-color: #e4e3eb;
+  background-color: #ffffff;
   width: 44px;
   aspect-ratio: 1;
   display: flex;
@@ -73,4 +76,11 @@ button {
     top: 2%;
     left: 12%;
   }
+}
+
+.main-loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

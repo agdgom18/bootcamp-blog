@@ -1,15 +1,15 @@
 import Card from '../../components/Card';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Filters from '../../components/filters';
 import bannerPhoto from '../../img/Blog-1024x355 1.png';
 import styles from './home.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchData, filterData } from '../../store/dataSlice';
 import Cookies from 'js-cookie';
+import { TailSpin } from 'react-loader-spinner';
 
 const Home = () => {
   const { loading, filterBlogArr, filterArr } = useSelector((state) => state.dataSlice);
-  const [localBlogs, setLocalBlogs] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,7 +17,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    setLocalBlogs([...filterBlogArr]);
     Cookies.set('filters', JSON.stringify(filterArr));
   }, [filterBlogArr]);
 
@@ -25,7 +24,18 @@ const Home = () => {
     dispatch(filterData(label));
   };
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <TailSpin
+        visible={true}
+        height="160"
+        width="160"
+        color="#5D37F3"
+        ariaLabel="tail-spin-loading"
+        radius="1"
+        wrapperStyle={{}}
+        wrapperClass="main-loading-spinner"
+      />
+    );
   }
 
   return (
@@ -37,8 +47,8 @@ const Home = () => {
       <Filters filterby={filterby} filterArr={filterArr} />
 
       <div className={styles.cardList}>
-        {localBlogs &&
-          localBlogs.map(({ id, title, description, image, author, publish_date, categories }) => {
+        {filterBlogArr &&
+          filterBlogArr.map(({ id, title, description, image, author, publish_date, categories }) => {
             return (
               <Card
                 key={id}

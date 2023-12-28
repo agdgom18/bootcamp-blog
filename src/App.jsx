@@ -17,7 +17,7 @@ function App() {
   const currentPath = useLocation().pathname;
   const shouldDisplayHeader = currentPath !== '/add';
 
-  const [signedIn, setSignedIn] = React.useState(Boolean(Cookies.get('signedIn')));
+  const [signedIn, setSignedIn] = React.useState(Boolean(Cookies.get('signedIn') === 'true'));
   return (
     <>
       <Context.Provider value={[signedIn, setSignedIn]}>

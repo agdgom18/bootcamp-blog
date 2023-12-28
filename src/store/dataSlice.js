@@ -48,7 +48,12 @@ const dataSlice = createSlice({
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.loading = false;
       state.data = action.payload;
-      state.filterBlogArr = action.payload;
+      if (savedFilters) {
+        state.filterBlogArr = filterDataByFilterArr(action.payload, JSON.parse(savedFilters));
+      } else {
+        state.filterBlogArr = action.payload;
+      }
+
       state.error = '';
     });
     builder.addCase(fetchData.rejected, (state, action) => {

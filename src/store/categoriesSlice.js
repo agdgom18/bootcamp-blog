@@ -19,6 +19,7 @@ export const fetchCategories = createAsyncThunk('categories', async () => {
       value: el.id,
       label: el.title,
       color: el.background_color,
+      textColor: el.text_color,
     };
   });
 });
