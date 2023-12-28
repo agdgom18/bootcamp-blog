@@ -22,6 +22,10 @@ const Blog = () => {
     dispatch(fetchData());
   }, [dispatch]);
 
+  const goToSimilarBlog = (id) => {
+    dispatch(fetchBlog(id));
+  };
+
   if (loading) {
     return (
       <TailSpin
@@ -63,7 +67,7 @@ const Blog = () => {
         </ul>
         <p className={styles.description}>{blog.description}</p>
       </div>
-      {data && <SliderComponent data={data} blogId={blog.id} blogCategories={blog.categories} />}
+      {data && <SliderComponent goToSimilarBlog={goToSimilarBlog} data={data} blogId={blog.id} blogCategories={blog.categories} />}
     </div>
   );
 };

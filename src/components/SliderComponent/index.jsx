@@ -3,7 +3,7 @@ import Card from '../Card';
 import styles from './sliderComponent.module.scss';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 
-function SliderComponent({ data, blogId, blogCategories }) {
+function SliderComponent({ data, blogId, blogCategories, goToSimilarBlog }) {
   const filteredData = data?.filter((el) => {
     if (el.id === blogId) {
       return false;
@@ -11,12 +11,7 @@ function SliderComponent({ data, blogId, blogCategories }) {
     const categories = blogCategories;
     return el.categories?.some((category) => categories?.some((selectedCategory) => selectedCategory.title === category.title));
   });
-  const gotoBlog = (target, id) => {
-    if (target.classList.contains('link-text')) {
-      window.location.reload();
-      return;
-    }
-  };
+
   return (
     <CarouselProvider visibleSlides={3} totalSlides={filteredData?.length} step={1} naturalSlideWidth={400} naturalSlideHeight={600}>
       <div className={styles.similiar}>
@@ -46,7 +41,7 @@ function SliderComponent({ data, blogId, blogCategories }) {
         <Slider className={styles.slides}>
           {filteredData &&
             filteredData.map(({ title, description, image, author, publish_date, categories, id }, idx) => (
-              <Slide onClick={({ target }) => gotoBlog(target, id)} key={id} index={idx}>
+              <Slide onClick={() => goToSimilarBlog(id)} key={id} index={idx}>
                 <Card
                   key={id}
                   title={title}

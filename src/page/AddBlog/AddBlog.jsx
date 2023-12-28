@@ -311,7 +311,7 @@ const AddBlog = () => {
           )}
         </div>
         <div className={styles.buttonContainer}>
-          <button className={clsx(styles.button, isValid ? styles.buttonSuccess : '')} disabled={!isValid}>
+          <button className={clsx(styles.button, isValid && selectedName ? styles.buttonSuccess : '')} disabled={!(isValid && selectedName)}>
             გამოქვეყნება
           </button>
         </div>
