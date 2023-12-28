@@ -1,6 +1,7 @@
 @import '../../scss/variable.scss';
 .card {
   max-width: 408px;
+  height: 100%;
 }
 
 .img {
@@ -28,7 +29,11 @@
 
 .title {
   @include card-title;
-  margin-bottom: 16px;
+  height: 60px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
 }
 
 .filters {

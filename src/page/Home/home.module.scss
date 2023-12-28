@@ -23,7 +23,7 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 408px));
   justify-items: center;
-  align-items: start;
+  align-items: stretch;
   justify-content: center;
   gap: 56px 32px;
 }
