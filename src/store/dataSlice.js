@@ -47,11 +47,16 @@ const dataSlice = createSlice({
 
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.loading = false;
-      state.data = action.payload;
+      const sortedDataByDate = action.payload.slice().sort((a, b) => {
+        const dateA = new Date(a.publish_date);
+        const dateB = new Date(b.publish_date);
+        return dateB - dateA;
+      });
+      state.data = sortedDataByDate;
       if (savedFilters) {
-        state.filterBlogArr = filterDataByFilterArr(action.payload, JSON.parse(savedFilters));
+        state.filterBlogArr = filterDataByFilterArr(sortedDataByDate, JSON.parse(savedFilters));
       } else {
-        state.filterBlogArr = action.payload;
+        state.filterBlogArr = sortedDataByDate;
       }
 
       state.error = '';

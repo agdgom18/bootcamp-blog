@@ -167,10 +167,11 @@ input {
   align-items: flex-start;
   flex-direction: column;
   row-gap: 8px;
-  list-style-type: disc !important;
+  margin-left: 20px;
   li {
     padding: 0;
     color: grey;
+    list-style-type: disc !important;
   }
   p {
     line-height: 1px;
