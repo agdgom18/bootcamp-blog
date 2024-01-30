@@ -1,323 +1,453 @@
-import { useState, useRef } from 'react';
-import pick from '../../img/folder-add.svg';
-import gallery from '../../img/gallery.svg';
-import logo from '../../img/logo.svg';
-import successIcon from '../../img/succsess-circle.svg';
-import Modal from '../../components/Modal/Modal';
-import postBlog from '../../utils/postBlog';
-import { useForm, Controller } from 'react-hook-form';
-import clsx from 'clsx';
-import styles from './addBlog.module.scss';
-import infoCircle from '../../img/info-circle.svg';
-import { categoryStyles, fetchOptions } from '../../utils/fetchOpions';
-import useFormPersist from 'react-hook-form-persist';
-import cutLetter from '../../utils/cutAdditionalLetters';
-import { Link } from 'react-router-dom';
-import AsyncSelect from 'react-select/async';
+import clsx from 'clsx'
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import useFormPersist from 'react-hook-form-persist'
+import { Link } from 'react-router-dom'
+import AsyncSelect from 'react-select/async'
+import Modal from '../../components/Modal'
+import pick from '../../img/folder-add.svg'
+import gallery from '../../img/gallery.svg'
+import infoCircle from '../../img/info-circle.svg'
+import logo from '../../img/logo.svg'
+import successIcon from '../../img/succsess-circle.svg'
+import cutLetter from '../../utils/cutAdditionalLetters'
+import { categoryStyles, fetchOptions } from '../../utils/fetchOpions'
+import postBlog from '../../utils/postBlog'
+import styles from './addBlog.module.scss'
 
 const addClassBasedOnError = (value, hasError) => {
-  if (value.length === 0) {
-    return styles.defaultColor;
-  }
-  return hasError ? styles.failed : styles.success;
-};
+	if (value.length === 0) {
+		return styles.defaultColor
+	}
+	return hasError ? styles.failed : styles.success
+}
 
 const AddBlog = () => {
-  const [authorErrorsState, setAuthorErrorsState] = useState({
-    hasMinLettersError: false,
-    hasCountOfWordError: false,
-    hasGeLettersError: false,
-  });
+	const [authorErrorsState, setAuthorErrorsState] = useState({
+		hasMinLettersError: false,
+		hasCountOfWordError: false,
+		hasGeLettersError: false,
+	})
 
-  //  Modal feature
-  const [isOpen, setIsOpen] = useState(false);
-  const [serverError, setServerError] = useState(false);
-  const closeModal = () => {
-    document.body.style.overflowY = 'auto';
-    setIsOpen(false);
-  };
-  const [selectedName, setSelectedName] = useState('');
+	//  Modal feature
+	const [isOpen, setIsOpen] = useState(false)
+	const [serverError, setServerError] = useState(false)
+	const closeModal = () => {
+		document.body.style.overflowY = 'auto'
+		setIsOpen(false)
+	}
+	const [selectedName, setSelectedName] = useState('')
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-    watch,
-    setValue,
-    getValues,
-    resetField,
-    reset,
-  } = useForm({
-    mode: 'onChange',
-    defaultValues: {
-      author: '',
-      title: '',
-      email: '',
-      description: '',
-      publish_date: '',
-      image: {},
-      categories: [],
-    },
-  });
+	const {
+		register,
+		control,
+		handleSubmit,
+		formState: { errors, isValid },
+		watch,
+		setValue,
+		getValues,
+		resetField,
+		reset,
+	} = useForm({
+		mode: 'onChange',
+		defaultValues: {
+			author: '',
+			title: '',
+			email: '',
+			description: '',
+			publish_date: '',
+			image: {},
+			categories: [],
+		},
+	})
 
-  useFormPersist('formData', {
-    watch,
-    setValue,
-    storage: window.localStorage,
-  });
+	useFormPersist('formData', {
+		watch,
+		setValue,
+		storage: window.localStorage,
+	})
 
-  const onSubmitHandler = async (data) => {
-    const dataToServer = {
-      ...data,
-      categories: data.categories.map((el) => el.value),
-    };
+	const onSubmitHandler = async data => {
+		const dataToServer = {
+			...data,
+			categories: data.categories.map(el => el.value),
+		}
 
-    postBlog(dataToServer)
-      .then((res) => {})
-      .catch((error) => {
-        setServerError(true);
-      })
-      .finally(() => {
-        setIsOpen(true);
-        document.body.style.overflowY = 'hidden';
-      });
+		postBlog(dataToServer)
+			.then(res => {})
+			.catch(error => {
+				setServerError(true)
+			})
+			.finally(() => {
+				setIsOpen(true)
+				document.body.style.overflowY = 'hidden'
+			})
 
-    reset();
-  };
+		reset()
+	}
 
-  const removeImage = () => {
-    resetField('image');
-    setSelectedName(null);
-  };
+	const removeImage = () => {
+		resetField('image')
+		setSelectedName(null)
+	}
 
-  return (
-    <div className={styles.addBlog}>
-      <div className={styles.logoImgContainer}>
-        <img className={styles.logo} src={logo} alt="logo" />
-      </div>
-      <h1 className={styles.title}>ბლოგის დამატება</h1>
-      <Link to={'/'} className="back-nav-button"></Link>
-      <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
-        <div className={clsx(styles.parent, selectedName ? styles.uploadBlock : '')}>
-          {!selectedName ? (
-            <div className={styles.fileupload}>
-              <img src={pick} alt="upload" />
-              <p>
-                ჩააგდეთ ფაილი აქ ან <span className={styles.pickFileButton}>აირჩიეთ ფაილი</span>
-              </p>
-              <Controller
-                control={control}
-                name="image"
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'ატვირთე ფაილი',
-                  },
-                  validate: {
-                    checkOnEmpty: (value) => {
-                      return value != null;
-                    },
-                  },
-                }}
-                render={({ field: { onChange, value }, fieldState: { error } }) => {
-                  return (
-                    <>
-                      <input
-                        accept=".jpg, .jpeg, .png, .gif"
-                        onChange={({ target }) => {
-                          setSelectedName(target.files[0].name);
-                          onChange(target.files[0]);
-                        }}
-                        type="file"
-                      />
-                      <p>{errors?.image?.message}</p>
-                    </>
-                  );
-                }}
-              />
-            </div>
-          ) : (
-            <div className={styles.uploadBlock}>
-              <div className={styles.successUploadContainer}>
-                <img className={styles.uploadGallery} src={gallery}></img>
-                <h3 className={styles.successUploadTitle}> {cutLetter(selectedName)}</h3>
-              </div>
-              <div className="dflex align-center">
-                <button onClick={removeImage} className={styles.successUploadButton}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M7.75781 16.2426L16.2431 7.75736" stroke="#1A1A1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M16.2431 16.2426L7.75781 7.75736" stroke="#1A1A1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+	return (
+		<div className={styles.addBlog}>
+			<div className={styles.logoImgContainer}>
+				<img className={styles.logo} src={logo} alt='logo' />
+			</div>
+			<h1 className={styles.title}>ბლოგის დამატება</h1>
+			<Link to={'/'} className='back-nav-button'></Link>
+			<form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
+				<div
+					className={clsx(
+						styles.parent,
+						selectedName ? styles.uploadBlock : ''
+					)}
+				>
+					{!selectedName ? (
+						<div className={styles.fileupload}>
+							<img src={pick} alt='upload' />
+							<p>
+								ჩააგდეთ ფაილი აქ ან{' '}
+								<span className={styles.pickFileButton}>აირჩიეთ ფაილი</span>
+							</p>
+							<Controller
+								control={control}
+								name='image'
+								rules={{
+									required: {
+										value: true,
+										message: 'ატვირთე ფაილი',
+									},
+									validate: {
+										checkOnEmpty: value => {
+											return value != null
+										},
+									},
+								}}
+								render={({
+									field: { onChange, value },
+									fieldState: { error },
+								}) => {
+									return (
+										<>
+											<input
+												accept='.jpg, .jpeg, .png, .gif'
+												onChange={({ target }) => {
+													setSelectedName(target.files[0].name)
+													onChange(target.files[0])
+												}}
+												type='file'
+											/>
+											<p>{errors?.image?.message}</p>
+										</>
+									)
+								}}
+							/>
+						</div>
+					) : (
+						<div className={styles.uploadBlock}>
+							<div className={styles.successUploadContainer}>
+								<img className={styles.uploadGallery} src={gallery}></img>
+								<h3 className={styles.successUploadTitle}>
+									{' '}
+									{cutLetter(selectedName)}
+								</h3>
+							</div>
+							<div className='dflex align-center'>
+								<button
+									onClick={removeImage}
+									className={styles.successUploadButton}
+								>
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+									>
+										<path
+											d='M7.75781 16.2426L16.2431 7.75736'
+											stroke='#1A1A1F'
+											strokeWidth='1.5'
+											strokeLinecap='round'
+											strokeLinejoin='round'
+										/>
+										<path
+											d='M16.2431 16.2426L7.75781 7.75736'
+											stroke='#1A1A1F'
+											strokeWidth='1.5'
+											strokeLinecap='round'
+											strokeLinejoin='round'
+										/>
+									</svg>
+								</button>
+							</div>
+						</div>
+					)}
+				</div>
 
-        <div className={clsx(styles.field, styles.fieldGeneral)}>
-          <div className={styles.authorField}>
-            <label htmlFor="author">ავტორი *</label>
-            <input
-              {...register('author', {
-                required: {
-                  value: true,
-                },
-                validate: {
-                  validateValue: (value) => {
-                    const letters = /^[\u10D0-\u10FF]+$/;
-                    setAuthorErrorsState({
-                      hasMinLettersError: !(value.trim().length >= 4),
-                      hasCountOfWordError: !(value.trim().split(' ').length >= 2),
-                      hasGeLettersError: !letters.test(value.replace(/\s/g, '')),
-                    });
-                    return Object.values(authorErrorsState).every((value) => value === false);
-                  },
-                },
-              })}
-              className={getValues('author').length === 0 ? styles.input : errors.author ? styles.failedInput : styles.successInput}
-              type="text"
-              placeholder="შეიყვანეთ ავტორი"
-            />
-            <ul className={styles.circleList}>
-              <li className={addClassBasedOnError(getValues('author'), authorErrorsState.hasMinLettersError)}>მინიმუმ 4 სიმბოლო</li>
-              <li className={addClassBasedOnError(getValues('author'), authorErrorsState.hasCountOfWordError)}>მინიმუმ ორი სიტყვა</li>
-              <li className={addClassBasedOnError(getValues('author'), authorErrorsState.hasGeLettersError)}>მხოლოდ ქართული სიმბოლოები</li>
-            </ul>
-          </div>
+				<div className={clsx(styles.field, styles.fieldGeneral)}>
+					<div className={styles.authorField}>
+						<label htmlFor='author'>ავტორი *</label>
+						<input
+							{...register('author', {
+								required: {
+									value: true,
+								},
+								validate: {
+									validateValue: value => {
+										const letters = /^[\u10D0-\u10FF]+$/
+										setAuthorErrorsState({
+											hasMinLettersError: !(value.trim().length >= 4),
+											hasCountOfWordError: !(
+												value.trim().split(' ').length >= 2
+											),
+											hasGeLettersError: !letters.test(
+												value.replace(/\s/g, '')
+											),
+										})
+										return Object.values(authorErrorsState).every(
+											value => value === false
+										)
+									},
+								},
+							})}
+							className={
+								getValues('author').length === 0
+									? styles.input
+									: errors.author
+									? styles.failedInput
+									: styles.successInput
+							}
+							type='text'
+							placeholder='შეიყვანეთ ავტორი'
+						/>
+						<ul className={styles.circleList}>
+							<li
+								className={addClassBasedOnError(
+									getValues('author'),
+									authorErrorsState.hasMinLettersError
+								)}
+							>
+								მინიმუმ 4 სიმბოლო
+							</li>
+							<li
+								className={addClassBasedOnError(
+									getValues('author'),
+									authorErrorsState.hasCountOfWordError
+								)}
+							>
+								მინიმუმ ორი სიტყვა
+							</li>
+							<li
+								className={addClassBasedOnError(
+									getValues('author'),
+									authorErrorsState.hasGeLettersError
+								)}
+							>
+								მხოლოდ ქართული სიმბოლოები
+							</li>
+						</ul>
+					</div>
 
-          <Modal isOpen={isOpen} onClose={() => closeModal()}>
-            <div className={styles.successBLock}>
-              <img className={styles.successCircle} src={successIcon} alt="success icon" />
-              <h3 className={styles.successTitle}>ჩანაწერი წარმატებით დაემატა</h3>
-              <Link onClick={() => (document.body.style.overflowY = 'auto')} to={'/'} className={styles.successLink}>
-                <span> მთავარ გვერდზე დაბრუნება</span>
-              </Link>
-            </div>
-          </Modal>
+					<Modal isOpen={isOpen} onClose={() => closeModal()}>
+						<div className={styles.successBLock}>
+							<img
+								className={styles.successCircle}
+								src={successIcon}
+								alt='success icon'
+							/>
+							<h3 className={styles.successTitle}>
+								ჩანაწერი წარმატებით დაემატა
+							</h3>
+							<Link
+								onClick={() => (document.body.style.overflowY = 'auto')}
+								to={'/'}
+								className={styles.successLink}
+							>
+								<span> მთავარ გვერდზე დაბრუნება</span>
+							</Link>
+						</div>
+					</Modal>
 
-          <div className={styles.headerField}>
-            <label htmlFor="header">სათაური *</label>
-            <input
-              {...register('title', {
-                required: {
-                  value: true,
-                  message: 'Title is required',
-                },
-                validate: {
-                  minLength: (value) => value.trim().length >= 2,
-                },
-              })}
-              className={getValues('title').length === 0 ? styles.input : errors.title ? styles.failedInput : styles.successInput}
-              id="header"
-              type="text"
-              placeholder="შეიყვანეთ სათაური"
-            />
-            <p className={addClassBasedOnError(getValues('title'), errors.title)}>მინიმუმ 2 სიმბოლო</p>
-          </div>
-        </div>
-        <div className={clsx(styles.field, styles.fieldDescription)}>
-          <label>აღწერა *</label>
-          <textarea
-            {...register('description', {
-              required: {
-                value: true,
-                message: 'Description is required',
-              },
-              validate: {
-                minLength: (value) => value.trim().length >= 2,
-              },
-            })}
-            placeholder={'შეიყვნანეთ აღწერა'}
-            className={clsx(getValues('description').length === 0 ? styles.input : errors.description ? styles.failedInput : styles.successInput)}
-            cols="40"
-            id="textArea"
-            rows="10"></textarea>
-          <p className={addClassBasedOnError(getValues('description'), errors.description)}>მინიმუმ 2 სიმბოლო</p>
-        </div>
-        <div className={clsx(styles.field, styles.fieldDate)}>
-          <div className={styles.dateContainer}>
-            <label htmlFor="date">გამოქვეყნების თარიღი *</label>
-            <input
-              {...register('publish_date', {
-                required: 'აირჩიე თარიღი',
-              })}
-              type="date"
-              className={clsx(getValues('publish_date').length === 0 ? styles.input : errors.publish_date ? styles.failedInput : styles.successInput)}
-            />
-            <p className={styles.emailDesc}>{errors?.publish_date?.message}</p>
-          </div>
-          <div className={styles.categoryContainer}>
-            <label htmlFor="country-select">კატეგორია *</label>
-            <Controller
-              control={control}
-              name="categories"
-              rules={{
-                required: {
-                  value: true,
-                  message: 'აირჩიე კატეგორია',
-                },
-              }}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <>
-                  <AsyncSelect
-                    placeholder={'შეიყვანეთ კატეგორია'}
-                    onChange={(newValue) => onChange(newValue)}
-                    value={value}
-                    styles={categoryStyles}
-                    isMulti
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={fetchOptions}
-                    className={`react-select-container ${!!error ? 'notValid' : getValues('categories').length ? 'valid' : ''}`}
-                    classNamePrefix="react-select"
-                  />
-                  <p className={styles.emailDesc}>{error?.message}</p>
-                </>
-              )}
-            />
-          </div>
-        </div>
-        <div className={clsx(styles.field, styles.emailField)}>
-          <label htmlFor="email">ელ-ფოსტა</label>
-          <input
-            {...register('email', {
-              pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: 'არასწორი მეილი',
-              },
-              required: {
-                value: true,
-                message: 'შეიყვანეთ მეილი',
-              },
-              validate: {
-                emailEnd: (fieldValue) => {
-                  return fieldValue.endsWith('@redberry.ge') || 'მეილი უნდა მთავრდებოდეს @redberry.ge-ით';
-                },
-              },
-            })}
-            placeholder="Example@redberry.ge"
-            type="email"
-            className={clsx(getValues('email').length === 0 ? styles.input : errors.email ? styles.failedInput : styles.successInput)}
-            id={styles.email}
-          />
-          {errors?.email && (
-            <div className={styles.errorText}>
-              <div className={styles.emailContainer}>
-                <img src={infoCircle} alt="info" />
-                <p className={styles.emailDesc}>{errors.email?.message}</p>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className={styles.buttonContainer}>
-          <button className={clsx(styles.button, isValid && selectedName ? styles.buttonSuccess : '')} disabled={!(isValid && selectedName)}>
-            გამოქვეყნება
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
+					<div className={styles.headerField}>
+						<label htmlFor='header'>სათაური *</label>
+						<input
+							{...register('title', {
+								required: {
+									value: true,
+									message: 'Title is required',
+								},
+								validate: {
+									minLength: value => value.trim().length >= 2,
+								},
+							})}
+							className={
+								getValues('title').length === 0
+									? styles.input
+									: errors.title
+									? styles.failedInput
+									: styles.successInput
+							}
+							id='header'
+							type='text'
+							placeholder='შეიყვანეთ სათაური'
+						/>
+						<p
+							className={addClassBasedOnError(getValues('title'), errors.title)}
+						>
+							მინიმუმ 2 სიმბოლო
+						</p>
+					</div>
+				</div>
+				<div className={clsx(styles.field, styles.fieldDescription)}>
+					<label>აღწერა *</label>
+					<textarea
+						{...register('description', {
+							required: {
+								value: true,
+								message: 'Description is required',
+							},
+							validate: {
+								minLength: value => value.trim().length >= 2,
+							},
+						})}
+						placeholder={'შეიყვნანეთ აღწერა'}
+						className={clsx(
+							getValues('description').length === 0
+								? styles.input
+								: errors.description
+								? styles.failedInput
+								: styles.successInput
+						)}
+						cols='40'
+						id='textArea'
+						rows='10'
+					></textarea>
+					<p
+						className={addClassBasedOnError(
+							getValues('description'),
+							errors.description
+						)}
+					>
+						მინიმუმ 2 სიმბოლო
+					</p>
+				</div>
+				<div className={clsx(styles.field, styles.fieldDate)}>
+					<div className={styles.dateContainer}>
+						<label htmlFor='date'>გამოქვეყნების თარიღი *</label>
+						<input
+							{...register('publish_date', {
+								required: 'აირჩიე თარიღი',
+							})}
+							type='date'
+							className={clsx(
+								getValues('publish_date').length === 0
+									? styles.input
+									: errors.publish_date
+									? styles.failedInput
+									: styles.successInput
+							)}
+						/>
+						<p className={styles.emailDesc}>{errors?.publish_date?.message}</p>
+					</div>
+					<div className={styles.categoryContainer}>
+						<label htmlFor='country-select'>კატეგორია *</label>
+						<Controller
+							control={control}
+							name='categories'
+							rules={{
+								required: {
+									value: true,
+									message: 'აირჩიე კატეგორია',
+								},
+							}}
+							render={({
+								field: { onChange, value },
+								fieldState: { error },
+							}) => (
+								<>
+									<AsyncSelect
+										placeholder={'შეიყვანეთ კატეგორია'}
+										onChange={newValue => onChange(newValue)}
+										value={value}
+										styles={categoryStyles}
+										isMulti
+										cacheOptions
+										defaultOptions
+										loadOptions={fetchOptions}
+										className={`react-select-container ${
+											!!error
+												? 'notValid'
+												: getValues('categories').length
+												? 'valid'
+												: ''
+										}`}
+										classNamePrefix='react-select'
+									/>
+									<p className={styles.emailDesc}>{error?.message}</p>
+								</>
+							)}
+						/>
+					</div>
+				</div>
+				<div className={clsx(styles.field, styles.emailField)}>
+					<label htmlFor='email'>ელ-ფოსტა</label>
+					<input
+						{...register('email', {
+							pattern: {
+								value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+								message: 'არასწორი მეილი',
+							},
+							required: {
+								value: true,
+								message: 'შეიყვანეთ მეილი',
+							},
+							validate: {
+								emailEnd: fieldValue => {
+									return (
+										fieldValue.endsWith('@redberry.ge') ||
+										'მეილი უნდა მთავრდებოდეს @redberry.ge-ით'
+									)
+								},
+							},
+						})}
+						placeholder='Example@redberry.ge'
+						type='email'
+						className={clsx(
+							getValues('email').length === 0
+								? styles.input
+								: errors.email
+								? styles.failedInput
+								: styles.successInput
+						)}
+						id={styles.email}
+					/>
+					{errors?.email && (
+						<div className={styles.errorText}>
+							<div className={styles.emailContainer}>
+								<img src={infoCircle} alt='info' />
+								<p className={styles.emailDesc}>{errors.email?.message}</p>
+							</div>
+						</div>
+					)}
+				</div>
+				<div className={styles.buttonContainer}>
+					<button
+						className={clsx(
+							styles.button,
+							isValid && selectedName ? styles.buttonSuccess : ''
+						)}
+						disabled={!(isValid && selectedName)}
+					>
+						გამოქვეყნება
+					</button>
+				</div>
+			</form>
+		</div>
+	)
+}
 
-export default AddBlog;
+export default AddBlog
